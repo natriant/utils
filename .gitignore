@@ -1,4 +1,4 @@
 detuning_coefficients_due_to_sextupoles/madx
-detuning_coefficients_due_to_sextupoles/.png
-detuning_coefficients_due_to_sextupoles/.pkl
+detuning_coefficients_due_to_sextupoles/*.png
+detuning_coefficients_due_to_sextupoles/*.pkl
 
