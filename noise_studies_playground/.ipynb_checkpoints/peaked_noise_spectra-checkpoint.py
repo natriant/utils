@@ -12,7 +12,7 @@ turns = np.arange(1000)  # np.arange() gives sampling 1 which corresponds to tur
 
 # parameters for ksi
 mean = 0.0
-std = 14
+std = 0.02
 for i in turns:
     psi_t_list.append(psi_t)
     ksi = np.random.normal(mean, std)  # different seed on each turn
