@@ -32,7 +32,7 @@ plt.show()
 If we average the last half of the spectral density, 
 to exclude the peak, we can recover the noise power on the signal.
 '''
-print('The noise power of the signal is {}'.format(np.mean(Pxx_den[2566:])))
+print('The noise power of the signal is {}'.format(np.mu(Pxx_den[2566:])))
 
 '''
 Now we compute and plot the power spectrum
