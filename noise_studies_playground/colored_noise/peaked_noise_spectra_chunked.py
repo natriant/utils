@@ -48,7 +48,6 @@ for i in range(n_chunks):
     fft_list.append(my_fft)
 
 average_fft = my_sum / n_chunks
-print(average_fft[100])
 
 '''
 We plot only half of the spectrum, because that is the only 
@@ -72,7 +71,7 @@ if plot_one:
 
 # Plot the averaged FFT
 plt.plot(f[:n // 2], np.abs(average_fft)[:n // 2] * 1 / n, color='k',
-         label='average FFT over {} chunks'.format(n_chunks))
+         label='averaged FFT over {} chunks'.format(n_chunks))
 
 plt.ylabel("Noise amplitude (arbitrary units)")
 plt.xlabel("Frequency (tune units)")
