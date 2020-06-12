@@ -23,39 +23,60 @@ Delta_psi = 0.18  # the peak of the spectrum
 psi_t = 0
 
 # parameters for ksi
-mean, std = 0.0, 0.08
+mean = 0.0
+std_list = [0.04, 0.06, 0.08, 0.2, 0.3, 0.4, 0.5, 0.6, 0.8, 1.0]
 
-n_repeat = 5  # How many times the simulations is repeated to decrease the uncertainty.
+#std_lis_2 = np.arange(0.02, 1.2, 0.02)
+#std_list = list(std_lis_2)
 
-PSD_vb_list = []
-for repeat in range(n_repeat):
-    psi_t_list = []
-    for i in time:
-        psi_t_list.append(psi_t)
-        ksi = np.random.normal(mean, std)  # different seed on each turn
-        psi_t = psi_t + 2 * np.pi * Delta_psi + 2 * np.pi * ksi
+n_repeat = 10  # How many times the simulations is repeated to decrease the uncertainty.
 
-    # Construct the noise signal
-    y = phi_0 * np.cos(psi_t_list)
+myDict = {}  # Dictionary to keep the PSD at vb for different values of rmsKsi
+
+for std in std_list:
+    myDict['std{}'.format(std)] = []
+    PSD_vb_list = []
+    for repeat in range(n_repeat):
+        psi_t_list = []
+        for i in time:
+            psi_t_list.append(psi_t)
+            ksi = np.random.normal(mean, std)  # different seed on each turn
+            psi_t = psi_t + 2 * np.pi * Delta_psi + 2 * np.pi * ksi
+
+        # Construct the noise signal
+        y = phi_0 * np.cos(psi_t_list)
 
 
-    # Noise spectrum
-    fft = np.fft.fft(y)  # type: numpy.array
-    N = len(y)
-    f = np.linspace(0, 1 / T, N)  # 1/T = frequency
-    # energy spectral density
-    E_s = np.abs(fft) ** 2
-    # power spectral density
-    S_x = E_s / time
+        # Noise spectrum
+        fft = np.fft.fft(y)  # type: numpy.array
+        N = len(y)
+        f = np.linspace(0, 1 / T, N)  # 1/T = frequency
+        # energy spectral density
+        E_s = np.abs(fft) ** 2
+        # power spectral density
+        S_x = E_s / time
 
-    # The vb value doesn't exist exactly in f array. Therefore we need to find
-    # the closest to that value.
-    closest_vb_in_f = closest(list(f), vb)
-    #print('The closest value to vb in the frequency list is {} Hz'.format(closest_vb_in_f))
-    PSD_vb_index = [i for i in range(len(f)) if f[i] == closest_vb_in_f]
-    PSD_vb = S_x[PSD_vb_index]
-    PSD_vb_list.append(PSD_vb)
+        # The vb value doesn't exist exactly in f array. Therefore we need to find
+        # the closest to that value.
+        closest_vb_in_f = closest(list(f), vb)
+        PSD_vb_index = [i for i in range(len(f)) if f[i] == closest_vb_in_f]
+        PSD_vb = S_x[PSD_vb_index]
+        PSD_vb_list.append(PSD_vb)
 
-print('PSD values over {} runs : {}'.format(n_repeat, PSD_vb_list))
-print('mean PSD value  = {} rad^2/Hz'.format(np.mean(PSD_vb_list)))
-print('std PSD value  = {} rad^2/Hz'.format(np.std(PSD_vb_list)))
+        myDict['std{}'.format(std)].append(PSD_vb_list)
+        myDict['std{}'.format(std)].append(np.mean(PSD_vb_list))
+        myDict['std{}'.format(std)].append(np.std(PSD_vb_list))
+
+    #print('PSD values over {} runs : {}'.format(n_repeat, PSD_vb_list))
+    #print('mean PSD value  = {} rad^2/Hz'.format(np.mean(PSD_vb_list)))
+    #print('std PSD value  = {} rad^2/Hz'.format(np.std(PSD_vb_list)))
+
+for std in std_list:
+    plt.plot(std, myDict['std{}'.format(std)][1], '.')
+
+
+
+plt.xlabel(r'$rms(\xi)/2\pi$')
+plt.ylabel('PSD at '+ r'$\nu_b$')
+plt.yscale('log')
+plt.show()
