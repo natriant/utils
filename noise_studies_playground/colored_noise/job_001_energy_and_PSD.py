@@ -69,11 +69,11 @@ if savefig:
 plt.show()
 plt.close()
 
-# Energy of the signal
+# Total energy of the signal
 E_s_total = np.sum(np.abs(y) ** 2)
 print('total energy of the signal = ', E_s_total)
 
-# spectral energy density
+# Energy spectral density
 E_s = np.abs(fft) ** 2
 plt.plot(f[:N // 2], E_s[:N // 2] * 1 / N)  # 1 / N is a normalization factor
 plt.ylabel("Energy")
@@ -94,17 +94,16 @@ plt.show()
 plt.close()
 
 # power spectral density - log scale
-S_x = E_s / time
 plt.plot(f[:N // 2] / 1000, S_x[:N // 2] * 1 / N)  # 1 / N is a normalization factor
 plt.ylabel("Power")
 plt.yscale('log')
 plt.xlabel("Frequency (kHz)")
 if savefig:
-    plt.savefig('power_spectral_density_logarithmic.png')
+    plt.savefig('power_spectral_density_LogScale.png')
 plt.show()
 plt.close()
 
-# The vb values doesn't exist exactly in f array. Therefore we need to find
+# The vb value doesn't exist exactly in f array. Therefore we need to find
 # the closest to that value.
 closest_vb_in_f = closest(list(f), vb)
 print('The closest value to vb in the frequency list is {} Hz'.format(closest_vb_in_f))
