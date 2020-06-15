@@ -3,7 +3,7 @@ import matplotlib.pyplot as plt
 
 ############## Parameters #################
 # Define the characteristics of the chunks
-n_chunks = 10
+n_chunks = int(1e4)
 n = 1000  # how many elements in each chunk should have
 
 # Sampling 1, which corresponds to turn by turn signal
@@ -28,33 +28,25 @@ for i in turns:
 
 phi_noise = phi_0 * np.cos(psi_t_list)
 
-plt.plot(turns, phi_noise, '.-')
-plt.ylabel("Noise amplitude (arbitrary units)")
-plt.xlabel("Time [s]")
-plt.show()
 
 ############## Chunk analysis #################
 # chunk the signal using list comprehension
 phi_noise_list = list(phi_noise)
 my_chunks = [phi_noise_list[i:i + n] for i in range(0, len(phi_noise), n)]
 
-fft_list = []  # keep the fft of each chunk
-my_sum = 0
+fft_array = np.ones((n_chunks, n))  # keep the fft of each chunk
+
 # Noise spectrum
 for i in range(n_chunks):
     signal = my_chunks[i]
     my_fft = np.fft.fft(signal)  # type: numpy.array
-    my_sum = my_sum + my_fft
-    fft_list.append(my_fft)
+    fft_array[i] = np.abs(my_fft)
 
-average_fft = my_sum / n_chunks
+averaged_fft = np.mean(fft_array, axis=0)
 
-'''
-We plot only half of the spectrum, because that is the only 
-half giving us real information.
-'''
 T = turns[1] - turns[0]  # sampling interval = 1
 f = np.linspace(0, 1 / T, n)  # 1/T = frequency
+
 
 # Plot the FFT spectrum of each/or selected chunk
 plot_all = False
@@ -62,20 +54,19 @@ plot_one = True
 
 if plot_all:
     for i in range(n_chunks):
-        plt.plot(f[:n // 2], np.abs(fft_list[i])[:n // 2] * 1 / n,
+        plt.plot(f[:n // 2], fft_array[i][:n // 2] * 1 / n,
                  label='example FFT of chunk {}'.format(i))  # 1 / N is a normalization factor
 
 if plot_one:
     i = 1
-    plt.plot(f[:n // 2], np.abs(fft_list[i])[:n // 2] * 1 / n, label='example FFT of chunk {}'.format(i))
+    plt.plot(f[:n // 2], fft_array[i][:n // 2] * 1 / n, label='example FFT of chunk {}'.format(i))
 
 # Plot the averaged FFT
-plt.plot(f[:n // 2], np.abs(average_fft)[:n // 2] * 1 / n, color='k',
+plt.plot(f[:n // 2], averaged_fft[:n // 2] * 1 / n, color='k',
          label='averaged FFT over {} chunks'.format(n_chunks))
 
 plt.ylabel("Noise amplitude (arbitrary units)")
 plt.xlabel("Frequency (tune units)")
-
 plt.legend()
 
 save_fig = True

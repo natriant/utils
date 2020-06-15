@@ -7,8 +7,8 @@ def closest(lst, K):
     return lst[min(range(len(lst)), key=lambda i: abs(lst[i] - K))]
 
 
-white_noise = False
-colored_noise = True
+white_noise = True
+colored_noise = False
 savefig = False
 
 turns = np.arange(1000)  # sampling 1
