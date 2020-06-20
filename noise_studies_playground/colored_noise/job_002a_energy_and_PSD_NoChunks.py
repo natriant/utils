@@ -6,28 +6,20 @@ import matplotlib.pyplot as plt
 def closest(lst, K):
     return lst[min(range(len(lst)), key=lambda i: abs(lst[i] - K))]
 
-# Flags
+
 white_noise = True
 colored_noise = False
 savefig = False
 
-# Parameters
-# Define the characteristics of the chunks
-n_chunks = int(1e4)
-n = 1000  # how many elements in each chunk should have
-
-# Sampling 1, which corresponds to turn by turn signal
-turns = np.arange(n_chunks * n)
-
-
+turns = np.arange(1000)  # sampling 1
 f_rev = 43.35e3  # Hz, compute it exactly
 vb = 0.18 * f_rev
 print('vb = {} Hz'.format(vb))
-# sampling
 time = turns / f_rev
+
+# turns
 T = time[1] - time[0]  # sampling interval = 1
 fs = 1 / T  # sampling frequency
-f = np.linspace(0, 1 / T, n)  # 1/T = frequency
 
 if white_noise:
     # Defined as a sequence of uncorrelated random values
@@ -55,43 +47,35 @@ if colored_noise:
     # Construct the noise signal
     y = phi_0 * np.cos(psi_t_list)
 
-############## Chunk analysis #################
-# chunk the signal using list comprehension
-y_list = list(y)
-my_chunks = [y_list[i:i + n] for i in range(0, len(y), n)]
-
-fft_array = np.ones((n_chunks, n))  # keep the fft of each chunk
-
-# Averaged FFT computation
-for i in range(n_chunks):
-    signal = my_chunks[i]
-    my_fft = np.fft.fft(signal)  # type: numpy.array
-    fft_array[i] = np.abs(my_fft)
-
-averaged_fft = np.mean(fft_array, axis=0)
-
-
-
-# Plot the averaged FFT
-plt.plot(f[:n // 2], averaged_fft[:n // 2] * 1 / n, color='k',
-         label='averaged FFT over {} chunks'.format(n_chunks))
-
-plt.title('Averaged FFT of noise, {} chunks'.format(n_chunks))
-plt.ylabel("Noise amplitude (arbitrary units)")
-plt.xlabel("Frequency (tune units)")
-plt.legend()
+plt.plot(time, y)
+plt.xlabel('time (s)')
+plt.ylabel('Noise amplitude')
 if savefig:
-    plt.savefig('averaged_fft_{}chunks.png'.format(n_chunks))
+    plt.savefig('noise_signal.png')
+plt.show()
+plt.close()
+
+# Noise spectrum
+fft = np.fft.fft(y)  # type: numpy.array
+N = len(y)
+
+f = np.linspace(0, 1 / T, )  # 1/T = frequency
+
+plt.plot(f[:N // 2], np.abs(fft)[:N // 2] * 1 / N)  # 1 / N is a normalization factor
+plt.ylabel("Amplitude (arbitrary units) ")
+plt.xlabel("Frequency (Hz)")
+if savefig:
+    plt.savefig('noise_spectrum_FFT.png')
 plt.show()
 plt.close()
 
 # Total energy of the signal
-E_s_total = np.sum(np.abs(averaged_fft) ** 2)
+E_s_total = np.sum(np.abs(y) ** 2)
 print('total energy of the signal = ', E_s_total)
 
 # Energy spectral density
-E_s = np.abs(averaged_fft) ** 2
-plt.plot(f[:n // 2], E_s[:n // 2] * 1 / n)  # 1 / N is a normalization factor
+E_s = np.abs(fft) ** 2
+plt.plot(f[:N // 2], E_s[:N // 2] * 1 / N)  # 1 / N is a normalization factor
 plt.ylabel("Energy")
 plt.xlabel("Frequency (Hz^2)")
 if savefig:
@@ -100,10 +84,8 @@ plt.show()
 plt.close()
 
 # power spectral density
-print(time[1000])
-
-S_x = E_s/(n**2) #/(time[1000])  #len(time)
-plt.plot(f[:n // 2] / 1000, S_x[:n // 2] * 1 / n)  # 1 / N is a normalization factor
+S_x = E_s / time
+plt.plot(f[:N // 2] / 1000, S_x[:N // 2] * 1 / N)  # 1 / N is a normalization factor
 plt.ylabel("Power")
 plt.xlabel("Frequency (kHz)")
 if savefig:
@@ -112,7 +94,7 @@ plt.show()
 plt.close()
 
 # power spectral density - log scale
-plt.plot(f[:n // 2] / 1000, S_x[:n // 2] * 1 / n)  # 1 / N is a normalization factor
+plt.plot(f[:N // 2] / 1000, S_x[:N // 2] * 1 / N)  # 1 / N is a normalization factor
 plt.ylabel("Power")
 plt.yscale('log')
 plt.xlabel("Frequency (kHz)")
@@ -127,5 +109,4 @@ closest_vb_in_f = closest(list(f), vb)
 print('The closest value to vb in the frequency list is {} Hz'.format(closest_vb_in_f))
 PSD_vb_index = [i for i in range(len(f)) if f[i] == closest_vb_in_f]
 PSD_vb = S_x[PSD_vb_index]
-print('energy at vb = {}'.format(E_s[PSD_vb_index]))
 print('PSD at vb = {}'.format(PSD_vb))
