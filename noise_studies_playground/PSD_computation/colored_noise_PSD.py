@@ -9,8 +9,23 @@ T = turns[1] - turns[0]  # sampling interval = 1
 fs = 1 / T  # sampling frequency
 f = np.linspace(0, 1 / T, n_turns)  # 1/T = frequency
 
-mu, stdPhaseNoise = 0, 1e-8
-y = np.random.normal(mu, stdPhaseNoise, len(turns))
+# Create colored noise
+phi_0 = 1e-8  # amplitude of noise, stdPhaseNoise
+Delta_psi = 0.18  # the peak of the spectrum
+
+psi_t_list = []
+psi_t = 0
+
+# parameters for ksi
+mean, std = 0.0, 0.08
+for i in turns:
+    psi_t_list.append(psi_t)
+    ksi = np.random.normal(mean, std)  # different seed on each turn
+    psi_t = psi_t + 2 * np.pi * Delta_psi + 2 * np.pi * ksi
+
+# Construct the noise signal
+y = phi_0 * np.cos(psi_t_list)
+
 
 # chunk the signal using list comprehension
 y_list = list(y)
@@ -36,10 +51,15 @@ plt.show()
 
 
 # Compute and plot the power of the spectrum
-Sx = np.abs(averaged_fft)**2
+Sx = np.abs(averaged_fft)**2 # energy/total power
 plt.plot(f_hz[:n_turns // 2], Sx[:n_turns // 2], color='k')
 plt.show()
 
-print('PSD should be {} 1/Hz'.format(stdPhaseNoise**2/frev))
+# print PSD
 print(Sx[800]/(len(Sx)*frev))
+
+# PSD as expected from theory
+print('Theoretical computations')
+print('PSD should be {} 1/Hz'.format(stdPhaseNoise**2/frev))
+print('Total noise power {}'.format(stdPhaseNoise**2))
 
