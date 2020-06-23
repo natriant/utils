@@ -11,8 +11,8 @@ N = 1e5
 amp = 2*np.sqrt(2)
 freq = 1234.0
 noise_power = 0.001 * fs / 2
-print(noise_power)
-quit()
+
+
 time = np.arange(N) / fs
 x = amp*np.sin(2*np.pi*freq*time)
 x += np.random.normal(scale=np.sqrt(noise_power), size=time.shape)

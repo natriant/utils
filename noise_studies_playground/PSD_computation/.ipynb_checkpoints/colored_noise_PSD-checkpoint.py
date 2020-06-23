@@ -2,11 +2,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 
-# Find closest value in a list
-def closest(lst, K):
-    return lst[min(range(len(lst)), key=lambda i: abs(lst[i] - K))]
-
-
 n_chunks = int(1e4)
 n_turns = 1000
 turns = np.arange(n_turns * n_chunks)
@@ -15,8 +10,22 @@ T = turns[1] - turns[0]  # sampling interval = 1
 fs = 1 / T  # sampling frequency
 f = np.linspace(0, 1 / T, n_turns)  # 1/T = frequency
 
-mu, stdPhaseNoise = 0, 1e-8
-y = np.random.normal(mu, stdPhaseNoise, len(turns))
+# Create colored noise
+phi_0 = 1e-8  # amplitude of noise, stdPhaseNoise
+Delta_psi = 0.18  # the peak of the spectrum
+
+psi_t_list = []
+psi_t = 0
+
+# parameters for ksi
+mean, std = 0.0, 0.8
+for i in turns:
+    psi_t_list.append(psi_t)
+    ksi = np.random.normal(mean, std)  # different seed on each turn
+    psi_t = psi_t + 2 * np.pi * Delta_psi + 2 * np.pi * ksi
+
+# Construct the noise signal
+y = phi_0 * np.cos(psi_t_list)
 
 # chunk the signal using list comprehension
 y_list = list(y)
@@ -34,7 +43,7 @@ averaged_fft = np.mean(fft_array, axis=0)
 
 # convert the f in tune units in Hz
 frev = 43.45e3  # Hz
-vb = 0.18 # betatron tune
+vb = 0.18  # betatron tune
 f_hz = f * frev
 
 # Plot the averaged FFT, normalised with the signal's length, such as the amplitude is not affected by the length of
@@ -58,7 +67,7 @@ plt.show()
 # Find the PSD at vb. In the case of white noise the PSD should remain constant.
 # Note that the vb value doesn't exist exactly in f array. Therefore we need to find its closest value.
 
-closest_vb_in_f = closest(list(f_hz), vb*frev)
+closest_vb_in_f = closest(list(f_hz), vb * frev)
 PSD_vb_index = [i for i in range(len(f_hz)) if f_hz[i] == closest_vb_in_f]
 
 PSD_vb = PSD[PSD_vb_index]
@@ -67,9 +76,8 @@ print('Computation of total power and PSD from signal processing ')
 print('PSD at vb is = {} rad^2/Hz'.format(PSD_vb))  # units: 1/Hz for amplitude noise
 print('The total power of the signal is ={} rad^2'.format(total_power))  # units: 1 for amplitude noise
 
-
 ###### 2. MATHEMATICAL APPROACH - STATISTICS #######
 # The total power is the variance of the statistical process
 print('Computation of total power and PSD from statistics ')
-print('PSD as the std of the process = {} rad^2/Hz'.format(stdPhaseNoise**2/frev))  # units: 1/Hz for amplitude noise
-print('The total power of the signal is ={} rad^2'.format(stdPhaseNoise**2))  # units: 1 for amplitude noise
+print('PSD as the std of the process = {} rad^2/Hz'.format(phi_0 ** 2 / frev))  # units: 1/Hz for amplitude noise
+print('The total power of the signal is ={} rad^2'.format(phi_0 ** 2))  # units: 1 for amplitude noise
