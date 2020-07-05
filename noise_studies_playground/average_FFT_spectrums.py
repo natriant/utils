@@ -1,3 +1,11 @@
+'''
+1) Create a signal with length, N=1000. 
+2) Obtaing the spectrum by performing a FFT.
+(numpy.fft.fft is a DFT)
+3) Compute the average of 100+ FFT spectrums. 
+
+The goal of this is to obtain a more clear spectrum. 
+'''
 import numpy as np
 import matplotlib.pyplot as plt
 
