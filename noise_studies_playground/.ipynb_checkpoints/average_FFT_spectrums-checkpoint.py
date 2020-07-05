@@ -2,7 +2,7 @@
 1) Create a signal with length, N=1000. 
 2) Obtaing the spectrum by performing a FFT.
 (numpy.fft.fft is a DFT)
-3) Compute the average of 100+ FFT spectrums. 
+3) Compute the average of 10+ FFT spectrums. 
 
 The goal of this is to obtain a more clear spectrum. 
 '''
@@ -49,16 +49,17 @@ f = np.linspace(0, 1 / T, N)  # 1/T = frequency
 
 fft_list = []
 std = 0.04
-for i in range(10):
+for i in range(10): # Define how many FFTs you will average
         y_noise = create_noise(N, std, True)
         fft = np.fft.fft(y_noise)
         fft_list.append(np.abs(fft))
 
 mean_fft = np.mean(fft_list, axis=0)
 
+# Plot vertical lines at 1 std
 plt.axvline(0.18+std, 0, 0.2, c='grey', linestyle='--')
-plt.axhline(1.5e-10, 0.5/0.14, 0.22, c='grey', linestyle='--')
 plt.axvline(0.18-std, 0, 0.2, c='grey', linestyle='--')
+
 plt.plot(f[:N // 2], np.abs(mean_fft[:N // 2] * 1 / N), c='k')
 
 plt.ylabel("Noise amplitude (arbitrary units)")
