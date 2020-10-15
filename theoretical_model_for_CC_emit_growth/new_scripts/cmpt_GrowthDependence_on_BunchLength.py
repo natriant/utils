@@ -3,16 +3,20 @@ import matplotlib.pyplot as plt
 from my_functions import *
 
 # plotting parameters
-params = {'legend.fontsize': 25,
+params = {'legend.fontsize': 20,
           'figure.figsize': (9.5, 8.5),
-          'axes.labelsize': 37,
-          'axes.titlesize': 37,
-          'xtick.labelsize': 37,
-          'ytick.labelsize': 37,
+          'axes.labelsize': 23,
+          'axes.titlesize': 23,
+          'xtick.labelsize': 23,
+          'ytick.labelsize': 23,
           'image.cmap': 'jet',
-          'lines.linewidth': 2,
-          'lines.markersize':5,
+          'lines.linewidth': 3,
+          'lines.markersize':10,
           'font.family': 'sans-serif'}
+
+plt.rc('text', usetex=False)
+plt.rc('font', family='serif')
+plt.rcParams.update(params)
 
 noise_type = 'BOTH'  # options: 'AN', 'PN', 'BOTH'
 
@@ -56,16 +60,16 @@ sigma_t_list = []
 for sigma_z in sigma_z_list:
     sigma_t_list.append(bunch_length_m_to_time(sigma_z, clight))
 
-fig, ax = plt.subplots(1,1)#,figsize=(8,6))
+fig, ax = plt.subplots(1,1)
 #ax.plot(np.array(sigma_t_list)*4*1e9, (np.array(dey_AN_list)+np.array(dey_PN_list))*1e9*beta_0*gamma_0**1e-3*3600 , '-')
 
 #ax.plot(np.array(sigma_t_list)*4*1e9,  np.array(dey_PN_list)*1e9*beta_0*gamma_0*1e-3*3600 , '-')
 #ax.plot(np.array(sigma_t_list)*4*1e9,  np.array(dey_AN_list)*1e9*beta_0*gamma_0*1e-3*3600 , '-')
-ax.plot(np.array(sigma_t_list)*4*1e9,  (np.array(dey_AN_list)+np.array(dey_PN_list))*1e9*beta_0*gamma_0*1e-3*3600 , '-')
+ax.plot(np.array(sigma_t_list)*4*1e9,  (np.array(dey_AN_list)+np.array(dey_PN_list))*1e9*beta_0*gamma_0*1e-3*3600, '-', c='k')
 
 
-#sigma_t_points = [(1.71e-9)/4, (2.21e-9)/4,(2.13e-9)/4, (2.1e-9)/4 ]
-sigma_t_points = [(1.63e-9)/4, (2.15e-9)/4,(2.07e-9)/4, (2.05e-9)/4 ]
+sigma_t_points = [(1.71e-9)/4, (2.21e-9)/4,(2.13e-9)/4, (2.1e-9)/4 ]
+#sigma_t_points = [(1.63e-9)/4, (2.15e-9)/4,(2.07e-9)/4, (2.05e-9)/4 ]
 
 
 for index, my_sigma_t in enumerate(sigma_t_points):
@@ -77,20 +81,17 @@ for index, my_sigma_t in enumerate(sigma_t_points):
     dey_PN = emit_growth_phase_noise(betay, Vcc, frev, Eb, my_C_PN, ssb_2_dsb(PSD_PN), True)
     dey_AN = emit_growth_amplitude_noise(betay, Vcc, frev, Eb, my_C_AN, ssb_2_dsb(PSD_AN), True)
 
+    ax.plot(my_sigma_t*4*1e9, (dey_AN+dey_PN)*1e9*beta_0*gamma_0*1e-3*3600, 'o', c='C{}'.format(index), label='bunch {}'.format(index+1))
 
-    #ax.plot(my_sigma_t*4*1e9, (dey_AN+dey_PN)*1e9*beta_0*gamma_0**1e-3*3600, 'o', c='C{}'.format(index), label='bunch {}'.format(index+1))
 ax.legend()
 ax.set_xlabel(r'$4 \sigma _t (ns)$')
 ax.set_ylabel(r'$d \epsilon_y / dt$' + ' ' +r'$\mu/h$')
-ax.grid('dashed')
-#ax.set_ylim(17, 19)
+ax.grid(linestyle='--')
 #ax.set_xlim(1.5, 2.5)
-
+#ax.set_ylim(4.8, 5.5)
 plt.tight_layout()
-plt.show()
+#plt.show()
 
-#plt.savefig('./figures/dey_vs_4sigmat_zoom_v2.png')
+plt.savefig('./figures/dey_vs_4sigmat_Coast2-Setting2_14_47.png')
 
-print(np.array(dey_AN_list[-1])*1e9*beta_0*gamma_0*1e-3*3600 + np.array(dey_PN_list[-1])*1e9*beta_0*gamma_0*1e-3*3600)
-print(np.array(dey_AN_list[-1])*1e9*beta_0*gamma_0*1e-3*3600)
-print(np.array(dey_PN_list[-1])*1e9*beta_0*gamma_0*1e-3*3600)
+
