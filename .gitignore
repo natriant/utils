@@ -3,3 +3,5 @@ detuning_coefficients_due_to_sextupoles/*.png
 detuning_coefficients_due_to_sextupoles/*.pkl
 compute_tune_spread/output/*.pkl
 compute_tune_spread/input/
+theoretical_model_for_CC_emit_growth/new_scripts/figures/*.png
+
