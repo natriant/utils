@@ -104,7 +104,6 @@ def ssb_2_dsb(L):
     S = 2*10**(L/10)
     return S
 
-
 def dsb_2_ssb(S):
     L_10 = np.log10(S/2)
     L = L_10*10

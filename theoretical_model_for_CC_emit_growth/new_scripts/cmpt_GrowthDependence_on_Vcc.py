@@ -34,7 +34,7 @@ clight = 299792458  # light speed in meters/second
 f_RF = 400.789e6  # CC frequency in Hz
 sigma_t = 1.7e-9/4
 sigma_z = bunch_length_time_to_m(sigma_t, clight)
-sigma_phi=bunch_length_m_to_rad(sigma_z, clight, f_RF)
+sigma_phi = bunch_length_m_to_rad(sigma_z, clight, f_RF)
 
 dey_PN_list = []
 dey_AN_list = []
@@ -45,7 +45,7 @@ myC_AN = cmpt_bunch_length_correction_factor(sigma_phi, noise_type='AN')
 Vcc_list = np.linspace(0.6e6, 1.3e6, 100)
 for Vcc in Vcc_list:
     dey_PN_list.append(emit_growth_phase_noise(betay, Vcc, frev, Eb, myC_PN, ssb_2_dsb(PSD_PN), True))  # true for one-sided PSD
-    dey_AN_list.append(emit_growth_amplitude_noise(betay, Vcc, frev, Eb, myC_AN, ssb_2_dsb(PSD_AN), True))  # true for
+    dey_AN_list.append(emit_growth_amplitude_noise(betay, Vcc, frev, Eb, myC_AN, ssb_2_dsb(PSD_AN), True))
 
 
 
