@@ -31,12 +31,10 @@ effective_PN_dict = pkl.load(open('effective_PN_4bunches_MD5.pkl', 'rb'))
 
 
 # uncertainties of the measured PN and AN when converted in rad^2/Hz
+# big differences on the uncertainties of the theoretical rates are introduced here
 sigma_PN_rad = np.log(10)*ssb_2_dsb(PN_dBc)*sigma_PN_dBc/10
 sigma_AN_rad = np.log(10)*ssb_2_dsb(AN_dBc)*sigma_AN_dBc/10
 
-print(sigma_PN_rad)
-print(sigma_PN_dBc)
-quit()
 
 # uncertainty of the theoretical expected growth rate
 # Load the initial bunch lengths for each coast settings
