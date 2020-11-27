@@ -7,6 +7,7 @@ def chromatic_tune_spread(dpp_rms, order, Qp):
         dqy = Qp * (dpp_rms ** 2)
     return dqy
 
+
 def amplitude_detuning_x(Jx, Jy, a_xx, a_xy):
         return a_xx * 2 * Jx + a_xy * 2 * Jy
 
