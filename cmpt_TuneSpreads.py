@@ -27,5 +27,5 @@ def rms_amplitude_detuning_x(Jx, Jy, a_xx, a_xy):
 
 def rms_amplitude_detuning_y(Jx, Jy, a_yy, a_xy):
     # Jx, Jy: arrays
-    return 2*np.sqrt((a_yy*np.std(Jy))*2+(a_xy*np.std(Jx))*2)
+    return 2*np.sqrt((a_yy*np.std(Jy))**2+(a_xy*np.std(Jx))**2)
 
