@@ -1,5 +1,8 @@
 import numpy as np
 
+clight = 299792458
+gamma_0 = 287.8  # for SPS at 270GeV
+beta_0 = np.sqrt(1 - 1/gamma_0**2)
 
 def cavity_wavenumber(f_cc, clight):
     # f_cc the cavity frequency in [Hz], clight the speed of light in [m/s]
@@ -21,3 +24,19 @@ def CC_transverse_y_kick(beta_y, beta_y_cc, delta_py_cc, muy, Qy):
     y_co_cc = (np.sqrt(beta_y * beta_y_cc)) * np.array(delta_py_cc) * np.cos(2 * np.pi * muy - np.pi * Qy) / (
                 2 * np.sin(np.pi * Qy))
     return y_co_cc
+
+
+def CC_phaseNoise_y_kick(A, f_cc, initial_sigmas):
+    # A = Vo/Eb*sqrt(beta_CC/beta_x)*Delta_phi
+    delta_py_pn = A*np.cos(2*np.pi*f_cc*initial_sigmas/(clight*beta_0))
+    return delta_py_pn
+
+
+def CC_amplitudeNoise_y_kick(A, f_cc, initial_sigmas):
+    # A = Vo/Eb*sqrt(beta_CC/beta_x)*Delta_phi
+    delta_py_an = A*np.sin(2*np.pi*f_cc*initial_sigmas/(clight*beta_0))
+    return delta_py_an
+
+
+#### plotting
+
