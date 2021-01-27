@@ -38,5 +38,5 @@ def CC_amplitudeNoise_y_kick(A, f_cc, initial_sigmas):
     return delta_py_an
 
 
-#### plotting
+
 
