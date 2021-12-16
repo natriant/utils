@@ -11,7 +11,7 @@ signals = []
 for freq in freq_list:
     s = np.cos(2 * np.pi * freq * t) # + 0.5 * np.sin(90 * 2 * np.pi * t)
     signals.append(s)
-    # plt.plot(t, s, label='freq={} Hz'.format(freq))
+    plt.plot(t, s, label='freq={} Hz'.format(freq))
 
 y_mean1 = sum(signals)/len(freq_list)
 plt.plot(t, y_mean1, c='k', linewidth=5, label='average wave, {} freqs'.format(len(freq_list)))

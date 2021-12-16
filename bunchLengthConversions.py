@@ -17,7 +17,8 @@ def bunch_length_m_to_time(sigma_z, clight):
     return sigma_t
 
 def bunch_length_time_to_m(sigma_t, clight):
-    # Arguments: L: bunch length in m, clight: in m/s
+    # Arguments:  sigma_t in seconds,clight: in m/s
     # Return: the bunch length in seconds. the result corresponds to 1 sigma_t (usual units 4sigma_t)
     sigma_z = sigma_t*clight
     return sigma_z
+

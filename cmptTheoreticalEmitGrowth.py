@@ -24,7 +24,7 @@ def emit_growth_amplitude_noise(betay, Vcc, frev, Eb, CDeltaA, PSD_A, one_sided_
 
 
 def cmpt_phase_noise_from_growth_rate(betay, Vcc, frev, Eb, CDeltaPhi, ey_rate, one_sided_psd = False):
-    # ey_rate in m/s geometric emittance
+    # ey_rate in m/s geometric emittance. betay in [m], Vcc in [V], frev in [Hz], Eb in [eV]
     PSD_phi = ey_rate/(betay*(Vcc*frev/(2*Eb))**2*CDeltaPhi)
     if one_sided_psd:
         return PSD_phi
@@ -32,7 +32,7 @@ def cmpt_phase_noise_from_growth_rate(betay, Vcc, frev, Eb, CDeltaPhi, ey_rate, 
         return PSD_phi/2
 
 def cmpt_amplitude_noise_from_growth_rate(betay, Vcc, frev, Eb, CDeltaA, ey_rate, one_sided_psd = False):
-    # ey_rate in m/s geometric emittance
+    # ey_rate in m/s geometric emittance. betay in [m], Vcc in [V], frev in [Hz], Eb in [eV]
     PSD_A = ey_rate/(betay*(Vcc*frev/(2*Eb))**2*CDeltaA)
     if one_sided_psd:
         return PSD_A/2
